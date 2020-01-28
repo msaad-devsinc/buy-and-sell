@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  get 'orders/index'
-  get 'cart/index'
+  devise_for :users
   resources :products do
   	resources :comments
   end
