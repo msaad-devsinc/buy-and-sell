@@ -1,0 +1,14 @@
+<%= form_for(:cart, url: carts_path,remote:true) do |form| %>
+
+    <div class="field">
+      <%= form.label :Quantity %>
+      <%= form.number_field :quantity, max:@product.quantity, min:1,value:1 %>
+    </div>
+
+    <%= form.hidden_field :user_id, value: current_user.id %>
+    <%= form.hidden_field :product_id, value: @product.id %>
+
+    <div class="actions">
+      <%= form.submit "add to cart"%>
+    </div>
+  <% end %>

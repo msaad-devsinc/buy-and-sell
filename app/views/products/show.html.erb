@@ -1,0 +1,55 @@
+<p id="notice"><%= notice %></p>
+
+<% (0...@product.images.count).each do |image| %>
+  <%= image_tag(@product.images[image], style: "width:250px;height:200px" ) %>
+<% end %>
+
+<h2>Tittle: </h2>
+<h3><%= @product.title %></h3>
+<h2>description:</h2>
+<p><%= @product.description %></p>
+
+<h1>add to cart</h1>
+<div id="cart-form">
+  <% if @product.user_id != current_user.id %>
+    <% if current_user.cart['products'].include? @product.id.to_s%>
+       <%= render 'update-form'  %>
+    <% else %>
+       <%= render 'create-form'  %>
+    <% end%>
+  <% end %>
+</div>
+<h1>Comments:</h1>
+<% if @product.user_id != current_user.id %>
+  <%= form_with(model: @comment, remote: true, url: product_comments_path(@product)) do |form| %>
+
+    <div class="field">
+      <%= form.label :Comment %>
+      <%= form.text_field :comment %>
+    </div>
+
+    <%= form.hidden_field :user_id, value: current_user.id %>
+
+    <div class="actions">
+      <%= form.submit %>
+    </div>
+  <% end %>
+<% end %>
+<div id="comment-section">
+	<ul>
+	<% @comments.each do |c| %>
+		<li id="c-<%= c.id %>"> 
+      <p><%= c.comment %></p>
+      <p><%= c.user.email %></p>
+      <% if c.user_id == current_user.id %>
+        <%= link_to 'Edit', edit_product_comment_path(c.product_id,c),remote:true %> |
+        <%= link_to 'Destroy', product_comment_path(c.product_id,c), method: :delete, data: { confirm: 'Are you sure?' } , remote:true %>
+      <% end %>
+    </li>
+	<% end%>
+  </ul>
+</div>
+
+
+<%= link_to 'Edit', edit_product_path(@product) %> |
+<%= link_to 'Back', products_path %>
