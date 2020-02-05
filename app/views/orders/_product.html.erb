@@ -1,0 +1,11 @@
+<% @products.each do |product| %>
+  <div id="p-<%= product.id %>">
+  	<h2>Title:<%= product.title %></h2>
+  	<h2>Description:<%= product.description %></h2>
+  	<h2>Price($):<%= product.price %></h2>
+    <h2>Quantity:<%= @cart['products'][product.id.to_s] %></h2>
+    <h2>cost: <%= product.price * @cart['products'][product.id.to_s].to_i %></h2>
+  	<h2>__________________________________________</h2>
+  </div>
+<% end %>
+

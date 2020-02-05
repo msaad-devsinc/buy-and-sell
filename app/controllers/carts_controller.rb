@@ -1,8 +1,6 @@
 class CartsController < ApplicationController
   def show
   	@cart = current_user.cart
-    puts 'aaaaaaaaaaaaaaa'
-    puts @cart
   	@products = Product.find(@cart['products'].keys)
   end
 
@@ -59,6 +57,11 @@ class CartsController < ApplicationController
 
     current_user.cart['products'].delete(params[:cart][:product_id])
     current_user.cart['total'] = @total
+
+    if current_user.cart['products'].length == 0
+      current_user.cart['total'] = 0
+      current_user.cart['discount'] = nil
+    end
     current_user.save
 
     respond_to do |format|

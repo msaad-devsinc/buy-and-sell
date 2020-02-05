@@ -4,7 +4,13 @@ class ProductsController < ApplicationController
 
   def index
     # @cart = current_user.cart
-    @products = Product.all
+    if params[:search].present?
+      query = params[:search][:query]
+    else
+      query = ''
+    end
+    # @products = Product.all
+    @products = Product.search(query)
   end
 
   def show
@@ -54,6 +60,7 @@ class ProductsController < ApplicationController
         current_user.cart = Hash.new
         current_user.cart['products'] = Hash.new
         current_user.cart['total'] = 0
+        current_user.cart['discount'] = nil
         current_user.save
       end
     end
