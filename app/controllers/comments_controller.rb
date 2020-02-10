@@ -1,44 +1,32 @@
 class CommentsController < ApplicationController
+  before_action :get_comments ,only: [:index]
+  before_action :find_comment ,only: [:edit,:update,:destroy]
   def index
-  	@comments = Product.find(params[:id]).comments
-  end
-
-  def new
-
   end
 
   def create
   	@product = Product.find(params[:product_id])
-  	@comment = @product.comments.create(comment_params)
-  	respond_to do |format|
-  		format.js
-  	end
+  	@comment = @product.comments.create(comment: params[:comment][:comment],user_id: current_user.id)
   end
 
   def edit
-  	@comment = Comment.find(params[:id])
-  	respond_to do |format|
-  		format.js
-  	end
   end
 
   def update
-  	@comment = Comment.find(params[:id])
-  	@comment.update(comment_params)
-  	respond_to do |format|
-  		format.js
-  	end
+  	@comment.update(comment: params[:comment][:comment],user_id: current_user.id)
   end
 
   def destroy
-  	@comment = Comment.find(params[:id])
   	@comment.destroy
-  	respond_to do |format|
-  		format.js
-  	end
   end
-
-  def comment_params
-      params.require(:comment).permit(:comment,:user_id)
+  private
+    def get_comments
+      @comments = Product.find(params[:id]).comments
     end
+    def find_comment
+      @comment = Comment.find(params[:id])
+    end
+  # def comment_params
+  #     params.require(:comment).permit(:comment)
+  # end
 end

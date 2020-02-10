@@ -1,28 +1,42 @@
 class OrdersController < ApplicationController
-  def index
-  end
+  before_action :get_cart_and_products, only: [:new,:create]
 
   def new
-  	@cart = current_user.cart
-  	@products = Product.find(@cart['products'].keys)
+    @coupon = Coupon.find_by(id:@cart['discount'])
   end
 
   def create
-  	# Set your secret key: remember to change this to your live secret key in production
-	# See your keys here: https://dashboard.stripe.com/account/apikeys
-	Stripe.api_key = 'sk_test_327i6VnfLzFLlkUj0elCxTco005vknis1x'
+  	token = params[:stripeToken]
 
-	# Token is created using Stripe Checkout or Elements!
-	# Get the payment token ID submitted by the form:
-	token = params[:stripeToken]
-
-	charge = Stripe::Charge.create({
-	  amount: current_user.cart['total'].to_i * 100,
-	  currency: 'usd',
-	  description: 'Example charge',
-	  source: token,
-	})
-
-	render json: charge
+    disc = 0
+    if current_user.cart['discount'].present?
+      disc = Coupon.apply_discount(current_user)
+    end
+  	charge = Stripe::Charge.create({
+  	  amount: ((current_user.cart['total'].to_f - disc) * 100).to_i,
+  	  currency: 'usd',
+  	  description: current_user.email,
+  	  source: token,
+  	})
+    if charge['status'] == 'succeeded'
+      current_user.orders.create(total:@cart['total'],cart:@cart)
+      Order.update_inventory(@cart)
+      Cart.empty_cart(current_user)
+      render :thankyou
+    else
+      render :retry
+    end
   end
+
+  def thankyou
+  end
+
+  def retry
+  end
+
+  private
+    def get_cart_and_products
+      @cart = current_user.cart
+      @products = Product.find(@cart['products'].keys)
+    end
 end

@@ -1,26 +1,25 @@
-<h2>Log in</h2>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+<div class="container my-5 form-border" style="width:40%;">
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
+    <div class="container">
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+
+      <%= f.label :password %><br />
+      <%= f.password_field :password, autocomplete: "current-password" %>
+      <%= f.submit "Log in", class: 'button' %>
+      <!-- <button type="submit">Login</button> -->
   <% end %>
+      <label>
+        <input type="checkbox" checked="checked" name="remember"> Remember me
+      </label>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
+    <div class="container">
+      <%= link_to 'Sign up',new_user_registration_path, class: 'cancelbtn button' %>
+    </div>
+  </form>
 
-<%= render "devise/shared/links" %>
+</div>

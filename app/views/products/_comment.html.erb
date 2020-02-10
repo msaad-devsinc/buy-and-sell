@@ -1,0 +1,10 @@
+<div class="ml-5 pl-5">
+	<%= form_with(model: @comment, remote: true, url: product_comments_path(@product)) do |form| %>
+	    <div class="field">
+	      <%= form.text_area :comment, max:200, size: "50x3",:required => true %>
+	    </div>
+	    <div class="actions">
+	      <%= form.submit 'Leave a Review', class: 'btn hvr-hover add-to-cart-btn'%>
+	    </div>
+	<% end %>
+</div>

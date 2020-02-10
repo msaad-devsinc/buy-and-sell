@@ -1,2 +1,3 @@
-$('#coupon-err').text('<%= @msg %>')
-$('#total').text("<%= current_user.cart['total'] %>")
+$('#coupon-err').text('<%= alert %>')
+$('#total').text("$ <%= @coupon.present? ? @cart['total'].to_f - (@coupon.discount * @cart['total'].to_f) : @cart['total'].to_f %>")
+$('#disc').text("$<%= @coupon.present? ? (@coupon.discount * @cart['total'].to_f).round(2) : '0' %>")

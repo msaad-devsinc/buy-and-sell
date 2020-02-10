@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_04_104241) do
+ActiveRecord::Schema.define(version: 2020_02_06_134148) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name", null: false
@@ -33,63 +33,42 @@ ActiveRecord::Schema.define(version: 2020_02_04_104241) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "carts", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.integer "quantity"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "product_id"
-    t.bigint "order_id"
-    t.index ["order_id"], name: "index_carts_on_order_id"
-    t.index ["product_id"], name: "index_carts_on_product_id"
-  end
-
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.text "comment"
+    t.text "comment", size: :tiny, null: false
+    t.bigint "user_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "product_id"
-    t.bigint "user_id"
     t.index ["product_id"], name: "index_comments_on_product_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "coupons", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.float "discount"
-    t.datetime "expiry"
+    t.float "discount", null: false
+    t.datetime "expiry", null: false
+    t.string "coupon", limit: 20, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "coupon"
-  end
-
-  create_table "images", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.string "imagable_type", null: false
-    t.bigint "imagable_id", null: false
-    t.string "path"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["imagable_type", "imagable_id"], name: "index_images_on_imagable_type_and_imagable_id"
   end
 
   create_table "orders", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.float "total"
+    t.float "total", null: false
+    t.json "cart", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.bigint "coupon_id"
-    t.json "cart"
-    t.index ["coupon_id"], name: "index_orders_on_coupon_id"
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "products", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.string "title"
-    t.string "category"
-    t.text "description"
-    t.float "price"
-    t.integer "quantity"
+    t.string "title", limit: 30
+    t.string "category", limit: 15
+    t.text "description", size: :tiny
+    t.decimal "price", precision: 10, null: false
+    t.integer "quantity", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
     t.index ["user_id"], name: "index_products_on_user_id"
   end
 
@@ -101,20 +80,17 @@ ActiveRecord::Schema.define(version: 2020_02_04_104241) do
     t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "firstName"
-    t.string "lastName"
-    t.string "phone"
+    t.string "firstName", limit: 25, null: false
+    t.string "lastName", limit: 25, null: false
+    t.string "phone", limit: 11, null: false
     t.json "cart"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "carts", "orders"
-  add_foreign_key "carts", "products"
   add_foreign_key "comments", "products"
   add_foreign_key "comments", "users"
-  add_foreign_key "orders", "coupons"
   add_foreign_key "orders", "users"
   add_foreign_key "products", "users"
 end

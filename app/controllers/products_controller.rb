@@ -1,27 +1,24 @@
 class ProductsController < ApplicationController
   before_action :find_product, only: [:show, :edit, :update, :destroy]
-  before_action :initialize_cart, only: [:index,:show]
 
   def index
-    # @cart = current_user.cart
     if params[:search].present?
-      query = params[:search][:query]
+      @products = Product.search(params[:search][:query])
+
     else
-      query = ''
+      @products = Product.where("quantity > '0'")
     end
-    # @products = Product.all
-    @products = Product.search(query)
   end
 
   def show
     @comment = Comment.new
-    @comments = Product.find(params[:id]).comments
+    @comments = @product.comments
   end
 
   def create
      # @product = Product.new(product_params)
      if current_user.products.create(product_params)
-      redirect_to :index
+      redirect_to products_path
      else
       render :new
      end
@@ -36,7 +33,7 @@ class ProductsController < ApplicationController
 
   def update
   	if @product.update(product_params)
-      redirect_to :index
+      redirect_to products_path
     else
       render :edit
     end
@@ -44,24 +41,21 @@ class ProductsController < ApplicationController
 
   def destroy
     @product.destroy
-    redirect_to :index
+    redirect_to products_path
+  end
+
+  def home
+    Cart.initialize_cart(current_user)
   end
 
   private
     def find_product
-      @product = Product.find(params[:id])
+      @product = Product.find_by(id:params[:id]) or not_found
     end
      def product_params
       params.require(:product).permit(:title,:category,:description,:price,:quantity,images: [])
     end
-
-    def initialize_cart
-      if !current_user.cart.present?
-        current_user.cart = Hash.new
-        current_user.cart['products'] = Hash.new
-        current_user.cart['total'] = 0
-        current_user.cart['discount'] = nil
-        current_user.save
-      end
+    def not_found
+      render :file => "/public/404.html",  :status => 404
     end
 end

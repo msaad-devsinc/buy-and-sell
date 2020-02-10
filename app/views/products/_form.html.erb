@@ -13,35 +13,36 @@
 
   <div class="field">
     <%= form.label :Title %>
-    <%= form.text_field :title %>
+    <%= form.text_field :title,max:30,:required => true  %>
   </div>
 
   <div class="field">
     <%= form.label :Category %>
-    <%= form.text_field :category %>
+    <%= form.text_field :category,max:15,:required => true %>
   </div>
 
   <div class="field">
-    <%= form.label :Description %>
-    <%= form.text_area :description %>
+    <%= form.label :Description %><br>
+    <%= form.text_area :description,max:250,:required => true,size:"50x3" %>
   </div>
 
   <div class="field">
     <%= form.label :Price %>
-    <%= form.number_field :price, step: :any%>
+    <%= form.number_field :price, step: :any,:required => true,min:0%>
   </div>
 
   <div class="field">
     <%= form.label :Stock %>
-    <%= form.number_field :quantity %>
+    <%= form.number_field :quantity,:required => true ,min:1%>
   </div>
 
   <div class="field">
     <%= form.label :images %>
-    <%= form.file_field :images , multiple:true %>
+    <%= form.file_field :images , multiple:true,:required => true %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit 'Create New Product' ,class: 'button'%>
   </div>
 <% end %>
+<%= link_to 'Back', products_path ,class: 'cancelbtn button'%>

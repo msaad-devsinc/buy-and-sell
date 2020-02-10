@@ -1,0 +1,6 @@
+class AddUserToOrder < ActiveRecord::Migration[6.0]
+  def change
+    add_reference :orders, :user, null: false, foreign_key: true
+    # add_reference :orders, :coupon, null: false, foreign_key: true
+  end
+end

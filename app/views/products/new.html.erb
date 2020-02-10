@@ -1,5 +1,6 @@
-<h1>New Product</h1>
+<div class="container my-5 form-border" style="width:40%;">
+  <h1>New Product</h1>
+  <%= render 'form', product: @product %>
+</div>
 
-<%= render 'form', product: @product %>
 
-<%= link_to 'Back', products_path %>

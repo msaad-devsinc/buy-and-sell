@@ -1,7 +1,14 @@
-<li id="c-<%= @comment.id %>"> 
-	<p><%= @comment.comment %></p>
-	<p> <%= @comment.user.email %></p>
-  	<%= link_to 'Edit', edit_product_comment_path(@comment.product_id,@comment),remote:true %> |
-      <%= link_to 'Destroy', product_comment_path(@comment.product_id,@comment), method: :delete, data: { confirm: 'Are you sure?' } , remote:true %>
-
-</li>
+<div class="media mb-3" id="c-<%= @comment.id %>" >
+	<div class="mr-3" style="width: 7%;"> 
+		<%= image_tag 'commentor' , class: 'rounded-circle border p-1 w-100'%>
+	</div>
+	<div class="media-body">
+		<p><%= @comment.comment %></p>
+		<small class="text-muted">Posted by <%= @comment.user.firstName %>, <%= time_ago_in_words(@comment.updated_at)%> ago</small>
+		  <% if @comment.user_id == current_user.id %>
+		    <%= link_to 'Edit', edit_product_comment_path(@comment.product_id,@comment),remote:true %> |
+		    <%= link_to 'Destroy', product_comment_path(@comment.product_id,@comment), method: :delete, data: { confirm: 'Are you sure?' } , remote:true %>
+		<% end %>
+	</div>
+</div>
+<hr>

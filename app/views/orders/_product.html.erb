@@ -1,11 +1,12 @@
 <% @products.each do |product| %>
-  <div id="p-<%= product.id %>">
-  	<h2>Title:<%= product.title %></h2>
-  	<h2>Description:<%= product.description %></h2>
-  	<h2>Price($):<%= product.price %></h2>
-    <h2>Quantity:<%= @cart['products'][product.id.to_s] %></h2>
-    <h2>cost: <%= product.price * @cart['products'][product.id.to_s].to_i %></h2>
-  	<h2>__________________________________________</h2>
+  <div class="media mb-2 border-bottom" id="p-<%= product.id %>">
+    <div class="media-body"> <h3 class="font-weight-bold"> <%= product.title %></h3>
+      <div class="small text-muted">
+        <h4>
+        Price: <%= product.price %> <span class="mx-2">|</span> Qty: <%= @cart['products'][product.id.to_s] %> <span class="mx-2">|</span> Subtotal: <%= product.price * @cart['products'][product.id.to_s].to_i %></h4>
+      </div>
+    </div>
   </div>
 <% end %>
+
 

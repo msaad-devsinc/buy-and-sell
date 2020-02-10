@@ -1,55 +1,111 @@
-<p id="notice"><%= notice %></p>
-
-<% (0...@product.images.count).each do |image| %>
-  <%= image_tag(@product.images[image], style: "width:250px;height:200px" ) %>
-<% end %>
-
-<h2>Tittle: </h2>
-<h3><%= @product.title %></h3>
-<h2>description:</h2>
-<p><%= @product.description %></p>
-
-<h1>add to cart</h1>
-<div id="cart-form">
-  <% if @product.user_id != current_user.id %>
-    <% if current_user.cart['products'].include? @product.id.to_s%>
-       <%= render 'update-form'  %>
-    <% else %>
-       <%= render 'create-form'  %>
-    <% end%>
-  <% end %>
-</div>
-<h1>Comments:</h1>
-<% if @product.user_id != current_user.id %>
-  <%= form_with(model: @comment, remote: true, url: product_comments_path(@product)) do |form| %>
-
-    <div class="field">
-      <%= form.label :Comment %>
-      <%= form.text_field :comment %>
+<!-- Start All Title Box -->
+    <div class="all-title-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Shop Detail</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                        <li class="breadcrumb-item active">Shop Detail </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- End All Title Box -->
 
-    <%= form.hidden_field :user_id, value: current_user.id %>
+    <!-- start shop details -->
+    <div class="shop-detail-box-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-5 col-lg-5 col-md-6">
+                    <div id="carousel-example-1" class="single-product-slider carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                          <% (0...@product.images.count).each do |image| %>
+                             <% image == 0 ? active = 'active' : active = '' %>
+                             <div class="carousel-item <%= active %>"> 
+                              <%= image_tag(@product.images[image], class: "d-block w-100" ) %>
+                             </div>
+                          <% end %>
+                        </div>
+                        <a class="carousel-control-prev" href="#carousel-example-1" role="button" data-slide="prev"> 
+            <i class="fa fa-angle-left" aria-hidden="true"></i>
+            <span class="sr-only">Previous</span> 
+          </a>
+                        <a class="carousel-control-next" href="#carousel-example-1" role="button" data-slide="next"> 
+            <i class="fa fa-angle-right" aria-hidden="true"></i> 
+            <span class="sr-only">Next</span> 
+          </a>
+                        <ol class="carousel-indicators">
+                          <% (0...@product.images.count).each do |image| %>
+                             <% image == 0 ? active = 'active' : active = '' %>
+                             <li data-target="#carousel-example-1" data-slide-to="<%= image %>" class="<%= active %>">
+                              <%= image_tag(@product.images[image], class: "d-block w-100 img-fluid" ) %>
+                             </li>
+                          <% end %>
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 col-md-6">
+                    <div class="single-product-details">
+                        <h2><%= @product.title %></h2>
+                        <h5>$<%= @product.price %></h5>
+                        <p class="available-stock">Stock Available : <%= @product.quantity %><p>
+                        <h4>Short Description:</h4>
+                        <p><%= @product.description %></p>
+                        <ul>
+                          <li>
+                            <div class="form-group">
+                              <div id="cart-form">
+                                <% if @product.user_id != current_user.id %>
+                                  <% if current_user.cart['products'].include? @product.id.to_s%>
+                                     <%= render 'update-form'  %>
+                                  <% else %>
+                                     <%= render 'create-form'  %>
+                                  <% end%>
+                                <% else %>
+                                  <h2>You can not add own products</h2>
+                                <% end %>
+                              </div>
+                              <!-- <input class="form-control" value="0" min="0" max="20" type="number"> -->
+                            </div>
+                          </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+      
+      <div class="row my-5">
+        <div class="card card-outline-secondary my-4">
+          <div class="card-header">
+            <h2>Product Reviews</h2>
+          </div>
+          <div class="card-body" id="comment-section">
+            <% @comments.each do |c| %>
+              <div class="media mb-3" id="c-<%= c.id %>" >
+              <div class="mr-3" style="width: 7%;"> 
+                <%= image_tag 'commentor' , class: 'rounded-circle border p-1 w-100'%>
+              </div>
+              <div class="media-body">
+                <p><%= c.comment %></p>
+                <small class="text-muted">Posted by <%= c.user.firstName %>, <%= time_ago_in_words(c.updated_at)%> ago</small>
+                  <% if c.user_id == current_user.id %>
+                    <%= link_to 'Edit', edit_product_comment_path(c.product_id,c),remote:true %> |
+                    <%= link_to 'Destroy', product_comment_path(c.product_id,c), method: :delete, data: { confirm: 'Are you sure?' } , remote:true %>
+                  <% end %>
+                </div>
+              </div>
+              <hr>
+            <% end%>
 
-    <div class="actions">
-      <%= form.submit %>
+            <% if @product.user_id != current_user.id %>
+              <%= render 'comment' %>
+            <% else %>
+              <h2>You can not review your own products</h2>
+            <% end %>
+          </div>
+          </div>
+      </div>
+        </div>
     </div>
-  <% end %>
-<% end %>
-<div id="comment-section">
-	<ul>
-	<% @comments.each do |c| %>
-		<li id="c-<%= c.id %>"> 
-      <p><%= c.comment %></p>
-      <p><%= c.user.email %></p>
-      <% if c.user_id == current_user.id %>
-        <%= link_to 'Edit', edit_product_comment_path(c.product_id,c),remote:true %> |
-        <%= link_to 'Destroy', product_comment_path(c.product_id,c), method: :delete, data: { confirm: 'Are you sure?' } , remote:true %>
-      <% end %>
-    </li>
-	<% end%>
-  </ul>
-</div>
-
-
-<%= link_to 'Edit', edit_product_path(@product) %> |
-<%= link_to 'Back', products_path %>
+    <!-- end shop details -->

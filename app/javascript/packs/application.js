@@ -8,6 +8,11 @@ require("@rails/activestorage").start()
 require("channels")
 require("jquery")
 require("packs/orders")
+require("packs/custom")
+require("packs/jquery.superslides.min")
+require("packs/jquery-3.2.1.min")
+require("packs/bootstrap.min")
+
 
 
 // Uncomment to copy all static images under ../images to the output folder and reference
