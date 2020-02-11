@@ -8,6 +8,6 @@ Rails.application.routes.draw do
   resource :coupon
   resource :account, controller: 'account'
   root 'products#home'
-  get "/about", to: 'static#about'
-  get "/contact", to: 'static#contact'
+  get "/about", to: 'pages#about'
+  get "/contact", to: 'pages#contact'
 end

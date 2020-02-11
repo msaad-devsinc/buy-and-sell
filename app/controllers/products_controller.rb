@@ -1,11 +1,12 @@
 class ProductsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:home]
   before_action :find_product, only: [:show, :edit, :update, :destroy]
 
   def index
     if params[:search].present?
       @products = Product.search(params[:search][:query])
     else
-      @products = Product.where("quantity > '0'")
+      @products = Product.all
     end
   end
 
@@ -43,7 +44,7 @@ class ProductsController < ApplicationController
   end
 
   def home
-    Cart.initialize_cart(current_user)
+    Cart.new(current_user)
   end
 
   private

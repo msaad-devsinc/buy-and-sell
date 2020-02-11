@@ -6,18 +6,12 @@ class OrderController < ApplicationController
   end
 
   def create
-  	token = params[:stripeToken]
-    disc = Coupon.apply_discount(current_user)
-  	charge = Stripe::Charge.create({
-  	  amount: ((current_user.cart['total'].to_f - disc) * 100).to_i,
-  	  currency: 'usd',
-  	  description: current_user.email,
-  	  source: token,
-  	})
+  	charge = Stripe::Charge.create(stripe_params)
+
     if charge['status'] == 'succeeded'
       current_user.orders.create(total:@cart['total'],cart:@cart)
       Order.update_inventory(@cart)
-      Cart.empty_cart(current_user)
+      Cart.empty(current_user)
       render :thankyou
     else
       render :retry
@@ -34,5 +28,15 @@ class OrderController < ApplicationController
     def get_cart_and_products
       @cart = current_user.cart
       @products = Product.find(@cart['products'].keys)
+    end
+
+    def stripe_params
+      discount = Coupon.apply_discount(current_user)
+      {
+        amount: ((current_user.cart['total'].to_f - discount) * 100).to_i,
+        currency: 'usd',
+        description: current_user.email,
+        source: params[:stripeToken],
+      }
     end
 end

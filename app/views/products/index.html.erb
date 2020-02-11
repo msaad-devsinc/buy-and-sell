@@ -42,7 +42,7 @@
                                                     <div class="type-lb">
                                                         <p class="sale">Sale</p>
                                                     </div>
-                                                    <%= image_tag(product.images[0], class: 'img-fluid' ) %>
+                                                    <%= product.quantity == 0 ? image_tag('outofstock',class: 'img-fluid') : image_tag(product.images[0], class: 'img-fluid' ) %>
                                                     <div class="mask-icon">
                                                         <%= link_to 'Details', product_path(product),class: 'cart'%>
                                                     </div>

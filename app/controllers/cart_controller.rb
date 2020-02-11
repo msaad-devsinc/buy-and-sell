@@ -31,17 +31,27 @@ class CartController < ApplicationController
       @products = Product.find(@cart['products'].keys)
     end
     def create_total
-      @total = current_user.cart['total'].to_f
       @product = Product.find(params[:cart][:product_id] )
-      @total = @total + ( @product.price.to_f * params[:cart][:quantity].to_i)
+      if @product.quantity < params[:cart][:quantity].to_i
+        flash[:alert] = 'Not enough stock'
+        redirect_to products_path
+      else
+        @total = current_user.cart['total'].to_f
+        @total = @total + ( @product.price.to_f * params[:cart][:quantity].to_i)
+      end
     end
     def update_total
-      @total = current_user.cart['total'].to_f
-      @product_old_qyt = current_user.cart['products'][params[:cart][:product_id]].to_i
       @product = Product.find(params[:cart][:product_id])
-      old_bill = @product_old_qyt * @product.price
-      new_bill = params[:cart][:quantity].to_i * @product.price
-      @total = (@total - old_bill) + new_bill
+      if @product.quantity < params[:cart][:quantity].to_i
+        flash[:alert] = 'Not enough stock'
+        redirect_to products_path
+      else
+        @total = current_user.cart['total'].to_f
+        @product_old_qyt = current_user.cart['products'][params[:cart][:product_id]].to_i
+        old_bill = @product_old_qyt * @product.price
+        new_bill = params[:cart][:quantity].to_i * @product.price
+        @total = (@total - old_bill) + new_bill
+      end
     end
     def destroy_total
       quantity = current_user.cart['products'][params[:cart][:product_id]].to_i
@@ -51,6 +61,7 @@ class CartController < ApplicationController
       @total = total - bill
       if current_user.cart['products'].length == 1
        current_user.cart['discount'] = nil
+       current_user.cart['total'] = 0
       end
     end
 end
