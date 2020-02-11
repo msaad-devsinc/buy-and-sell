@@ -10,8 +10,13 @@ class Coupon < ApplicationRecord
 			numericality: true
 
   def self.apply_discount(current_user)
-    coupon = Coupon.find(current_user.cart['discount'])
-    total = current_user.cart['total'].to_f
-    total * coupon.discount
+    disc = 0
+    if current_user.cart['discount'].present?
+      coupon = Coupon.find(current_user.cart['discount'])
+      total = current_user.cart['total'].to_f
+      disc = total * coupon.discount
+    else
+      disc
+    end
   end
 end

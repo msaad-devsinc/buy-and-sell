@@ -1,0 +1,2 @@
+$('#cart-count').text("<%= current_user.cart['products'].length %>")
+$('#cart-form').html('<%= j render "products/update-form" %>')

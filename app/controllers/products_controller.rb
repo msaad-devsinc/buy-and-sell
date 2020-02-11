@@ -4,7 +4,6 @@ class ProductsController < ApplicationController
   def index
     if params[:search].present?
       @products = Product.search(params[:search][:query])
-
     else
       @products = Product.where("quantity > '0'")
     end
@@ -16,7 +15,6 @@ class ProductsController < ApplicationController
   end
 
   def create
-     # @product = Product.new(product_params)
      if current_user.products.create(product_params)
       redirect_to products_path
      else
@@ -52,7 +50,7 @@ class ProductsController < ApplicationController
     def find_product
       @product = Product.find_by(id:params[:id]) or not_found
     end
-     def product_params
+    def product_params
       params.require(:product).permit(:title,:category,:description,:price,:quantity,images: [])
     end
     def not_found

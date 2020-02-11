@@ -1,7 +1,7 @@
 class CouponsController < ApplicationController
+  before_action :get_coupon_and_cart ,only: [:create]
+
   def create
-  	@coupon = Coupon.find_by(coupon: params[:discount][:coupon])
-    @cart = current_user.cart
   	# @coupon = Coupon.find(1)
   	if @coupon.present?
   		if current_user.cart['discount'].present?
@@ -13,8 +13,14 @@ class CouponsController < ApplicationController
 	  	else
 	  		flash[:alert] = 'coupon expired'
 	  	end
-	 else
+	   else
 	   	flash[:alert] = 'coupon not found'
-	 end
+  	 end
   end
+
+  private
+    def get_coupon_and_cart
+      @coupon = Coupon.find_by(coupon: params[:discount][:coupon])
+      @cart = current_user.cart
+    end
 end

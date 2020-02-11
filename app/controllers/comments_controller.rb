@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
   before_action :get_comments ,only: [:index]
   before_action :find_comment ,only: [:edit,:update,:destroy]
+
   def index
   end
 
@@ -26,7 +27,4 @@ class CommentsController < ApplicationController
     def find_comment
       @comment = Comment.find(params[:id])
     end
-  # def comment_params
-  #     params.require(:comment).permit(:comment)
-  # end
 end

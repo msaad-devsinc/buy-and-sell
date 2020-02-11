@@ -1,0 +1,38 @@
+<% @products.each do |product| %>
+<tr id="p-<%= product.id %>">
+  <td class="thumbnail-img">
+    <%= link_to product_path(product) do %>
+      <%= image_tag(product.images[0], class: 'img-fluid') %>
+    <% end %>
+  </td>
+  <td class="name-pr">
+    <%= link_to product_path(product) do %>
+      <%= product.title %>
+    <% end %>
+  </td>
+  <td class="price-pr">
+    <p>$ <%= product.price %> </p>
+  </td>
+  <td class="quantity-box">
+    <!-- <input type="number" size="4" value="1" min="0" step="1" class="c-input-text qty text"> -->
+    <%= form_for(:cart, url: carts_path,method: :patch,remote:true) do |form| %>
+    <div class="field">
+      <%= form.number_field :quantity, max:product.quantity, min:1,value:@cart['products'][product.id.to_s]%>
+    </div>
+    <%= form.hidden_field :product_id, value: product.id %>
+    <div class="cart-and-bay-btn">
+      <%= form.submit "add to cart", class: 'btn hvr-hover add-to-cart-btn mt-3 w-100'%>
+    </div>
+     <% end %>
+  </td>
+  <td class="remove-pr">
+    <%= form_for(:cart, url: carts_path,method: :delete,remote:true) do |form| %>
+    <%= form.hidden_field :product_id, value: product.id %>
+    <div class="cart-and-bay-btn">
+      <%= form.submit "remove from cart", class: 'btn hvr-hover add-to-cart-btn mt-3 w-50'%>
+    </div>
+  <% end %>
+  </td>
+</tr>
+<% end %>
+
