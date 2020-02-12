@@ -1,9 +1,7 @@
 class Order < ApplicationRecord
 	belongs_to :user
 
-	validates :total,
-			presence: true,
-			numericality: true
+	validates :total,presence: true,numericality: true
 
   def self.update_inventory(cart)
     products = Product.find(cart['products'].keys)

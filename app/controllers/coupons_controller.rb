@@ -2,7 +2,6 @@ class CouponsController < ApplicationController
   before_action :get_coupon_and_cart ,only: [:create]
 
   def create
-  	# @coupon = Coupon.find(1)
   	if @coupon.present?
   		if current_user.cart['discount'].present?
   			flash[:alert] = 'already applied'

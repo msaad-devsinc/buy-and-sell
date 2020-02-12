@@ -20,11 +20,14 @@ class CommentsController < ApplicationController
   def destroy
   	@comment.destroy
   end
+
   private
-    def get_comments
-      @comments = Product.find(params[:id]).comments
-    end
-    def find_comment
-      @comment = Comment.find(params[:id])
-    end
+
+  def get_comments
+    @comments = Product.find(params[:id]).comments
+  end
+
+  def find_comment
+    @comment = Comment.find(params[:id])
+  end
 end

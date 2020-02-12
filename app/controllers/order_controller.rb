@@ -7,7 +7,6 @@ class OrderController < ApplicationController
 
   def create
   	charge = Stripe::Charge.create(stripe_params)
-
     if charge['status'] == 'succeeded'
       current_user.orders.create(total:@cart['total'],cart:@cart)
       Order.update_inventory(@cart)
