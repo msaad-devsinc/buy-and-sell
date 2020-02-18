@@ -10,6 +10,7 @@ class CouponsController < ApplicationController
 	  		current_user.save
 	  		flash[:alert] = 'coupon applied'
 	  	else
+        @coupon = nil
 	  		flash[:alert] = 'coupon expired'
 	  	end
 	   else

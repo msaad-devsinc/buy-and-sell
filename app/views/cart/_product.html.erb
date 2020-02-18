@@ -1,5 +1,5 @@
 <% @products.each do |product| %>
-<tr id="p-<%= product.id %>">
+<tr id="p-<%= product.id %>" class="<%= 'bg-danger' if session[:not_enough_stock].include? product.id %>">
   <td class="thumbnail-img">
     <%= link_to product_path(product) do %>
       <%= image_tag(product.images[0], class: 'img-fluid') %>
@@ -34,5 +34,30 @@
   <% end %>
   </td>
 </tr>
+<% end %>
+<% if @out_of_stock_products.present? %>
+  <% @out_of_stock_products.each do |product| %>
+  <tr id="p-<%= product.id %>" class="bg-danger">
+    <td class="thumbnail-img">
+      <%= link_to product_path(product) do %>
+        <%= image_tag(product.images[0], class: 'img-fluid') %>
+      <% end %>
+    </td>
+    <td class="name-pr">
+      <%= link_to product_path(product) do %>
+        <%= product.title %>
+      <% end %>
+    </td>
+    <td class="price-pr">
+      <p>$ <%= product.price %> </p>
+    </td>
+    <td class="quantity-box">
+      <h3> Products are out of stock </h3>
+    </td>
+    <td class="remove-pr">
+
+    </td>
+  </tr>
+  <% end %>
 <% end %>
 

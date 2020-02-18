@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:home]
-  before_action :find_product, only: [:show, :edit, :update, :destroy]
+  skip_before_action :authenticate_user!, only: [:home,:index]
+  before_action :set_product, only: [:show]
+  before_action :set_user_product, only: [:edit, :update, :destroy]
 
   def index
     if params[:search].present?
@@ -16,7 +17,8 @@ class ProductsController < ApplicationController
   end
 
   def create
-     if current_user.products.create(product_params)
+    @product = current_user.products.create(product_params)
+     if @product.save
       redirect_to products_path
      else
       render :new
@@ -31,7 +33,8 @@ class ProductsController < ApplicationController
   end
 
   def update
-  	if @product.update(product_params)
+    @product.update(product_params)
+  	if @product.save
       redirect_to products_path
     else
       render :edit
@@ -45,16 +48,30 @@ class ProductsController < ApplicationController
 
   def home
     Cart.new(current_user)
+    session[:out_of_stock] = Hash.new
+    session[:not_enough_stock] = Hash.new
   end
 
   private
-    def find_product
+    def set_product
       @product = Product.find_by(id:params[:id]) or not_found
+    end
+    def set_user_product
+      @product = Product.find_by(id:params[:id])
+      if @product.blank?
+        not_found
+      else
+        if @product.user != current_user
+          flash[:alert] = 'you can only edit your own product'
+          redirect_to account_path
+        end
+      end
     end
     def product_params
       params.require(:product).permit(:title,:category,:description,:price,:quantity,images: [])
     end
     def not_found
-      render :file => "/public/404.html",  :status => 404
+      flash[:alert] = 'Product not found'
+      redirect_to products_path
     end
 end

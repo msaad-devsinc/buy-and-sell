@@ -12,6 +12,27 @@ class Cart
     end
   end
 
+  def self.verify(current_user,out_of_stock,not_enough_stock)
+    status = true
+    products = Product.find(current_user.cart['products'].keys)
+    products.each do |product|
+      quantity = current_user.cart['products'][product.id.to_s].to_i
+      if quantity > product.quantity and product.quantity == 0
+        current_user.cart['total'] = current_user.cart['total'].to_f - (quantity * product.price)
+        current_user.cart['products'].delete(product.id.to_s)
+        out_of_stock.store(product.id,quantity)
+        status = false
+      elsif quantity > product.quantity and product.quantity != 0
+        current_user.cart['total'] = (current_user.cart['total'].to_f - (quantity * product.price)) + product.quantity * product.price
+        current_user.cart['products'].store(product.id,product.quantity)
+        not_enough_stock.store(product.id,quantity)
+        status = false
+      end
+    end
+    current_user.save
+    status
+  end
+
   def self.empty(current_user)
     current_user.cart = Hash.new
     current_user.cart['products'] = Hash.new

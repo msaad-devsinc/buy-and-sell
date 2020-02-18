@@ -1,5 +1,4 @@
 class Coupon < ApplicationRecord
-
 	validates :coupon,presence: true,length: { maximum: 20 }
 	validates :expiry,presence: true
 	validates :discount,presence: true,numericality: true

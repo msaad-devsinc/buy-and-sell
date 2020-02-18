@@ -8,6 +8,7 @@ class CartController < ApplicationController
   def create
     @product = Product.find(params[:cart][:product_id])
   	current_user.cart.store('total',@total)
+    # current_user.cart['line-items']
   	current_user.cart['products'].store(params[:cart][:product_id] ,params[:cart][:quantity])
   	current_user.save
   end
@@ -30,6 +31,9 @@ class CartController < ApplicationController
   def set_cart_data
     @cart = current_user.cart
     @products = Product.find(@cart['products'].keys)
+    if session[:out_of_stock].present?
+      @out_of_stock_products = Product.find(session[:out_of_stock].keys)
+    end
   end
 
   def calculate_total

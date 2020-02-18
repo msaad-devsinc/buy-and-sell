@@ -6,14 +6,22 @@ class OrderController < ApplicationController
   end
 
   def create
-  	charge = Stripe::Charge.create(stripe_params)
-    if charge['status'] == 'succeeded'
-      current_user.orders.create(total:@cart['total'],cart:@cart)
-      Order.update_inventory(@cart)
-      Cart.empty(current_user)
-      render :thankyou
+    out_of_stock = Hash.new
+    not_enough_stock = Hash.new
+    if Cart.verify(current_user,out_of_stock,not_enough_stock)
+    	charge = Stripe::Charge.create(stripe_params)
+      if charge['status'] == 'succeeded'
+        current_user.orders.create(total:@cart['total'],cart:@cart)
+        Order.update_inventory(@cart)
+        Cart.empty(current_user)
+        render :thankyou
+      else
+        render :retry
+      end
     else
-      render :retry
+      session[:out_of_stock] = out_of_stock
+      session[:not_enough_stock] = not_enough_stock
+      redirect_to carts_path
     end
   end
 

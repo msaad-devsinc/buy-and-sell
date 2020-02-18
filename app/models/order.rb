@@ -10,5 +10,6 @@ class Order < ApplicationRecord
       product.quantity = product.quantity - quantity.to_i
       product.save
     end
+
   end
 end
